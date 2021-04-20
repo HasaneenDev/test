@@ -1,0 +1,392 @@
+<div class="">
+  <div class="breadcrumb">
+    <h1>المشغلين</h1>
+    <ul>
+      <li><a href="#">عرض المشغلين</a></li>
+      <!-- <li>Filter</li> -->
+    </ul>
+  </div>
+
+  <div class="row">
+    <div class="col-md-6">
+      <div class="card pt-3 pb-2 mb-2 px-2">
+        <div class="row">
+          <div class="col-md-8">
+            <div class="form-group">
+              <input
+                id="email"
+                placeholder="بحث"
+                class="form-control"
+                type="email"
+              />
+            </div>
+          </div>
+          <div class="col-md-4 text-left">
+            <button class="btn btn-outline-info">بحث</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <button class="btn btn-primary text-16" (click)="open(addUser)">
+        جديد <span class=""> + </span>
+      </button>
+    </div>
+    <div class="col-md-12">
+      <div class="card">
+        <div class="mat-elevation-z8 sticky mt-2 table-responsive">
+          <table mat-table [dataSource]="dataSource" width="100%">
+            <!-- <ng-container matColumnDef="id">
+              <th class="text-center" mat-header-cell *matHeaderCellDef>ت</th>
+              <td class="text-center" mat-cell *matCellDef="let element">
+                {{ element._id }}
+              </td>
+            </ng-container> -->
+            <!-- fullName Column -->
+            <ng-container matColumnDef="fullName">
+              <th class="text-center text-16" mat-header-cell *matHeaderCellDef>
+                الاسم الكامل
+              </th>
+              <td
+                class="text-center text-16"
+                mat-cell
+                *matCellDef="let element"
+              >
+                {{ element.fullName }}
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="username">
+              <th class="text-center text-16" mat-header-cell *matHeaderCellDef>
+                أسم المشغل
+              </th>
+              <td
+                class="text-center text-16"
+                mat-cell
+                *matCellDef="let element"
+              >
+                {{ element.username }}
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="roles">
+              <th class="text-center text-16" mat-header-cell *matHeaderCellDef>
+                الصلاحية
+              </th>
+              <td
+                class="text-center text-16"
+                mat-cell
+                *matCellDef="let element"
+              >
+                {{ element.roles }}
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="isActive">
+              <th class="text-center text-16" mat-header-cell *matHeaderCellDef>
+                حالة المستخدم
+              </th>
+              <td class="text-center" mat-cell *matCellDef="let element">
+                <span
+                  class="text-success px-2 py-1 text-16"
+                  *ngIf="element.isActive"
+                >
+                  فعال
+                </span>
+                <span
+                  class="text-danger px-2 py-1 text-16"
+                  *ngIf="!element.isActive"
+                >
+                  غير فعال
+                </span>
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="isLoggedIn">
+              <th class="text-center text-16" mat-header-cell *matHeaderCellDef>
+                حالة الدخول
+              </th>
+              <td
+                class="text-center text-16"
+                mat-cell
+                *matCellDef="let element"
+              >
+                <span
+                  class="badge badge-success px-2 py-1 text-14"
+                  *ngIf="element.isLoggedIn"
+                >
+                  {{ element.isLoggedIn }}
+                </span>
+                <span
+                  class="badge badge-danger px-2 py-1 text-14"
+                  *ngIf="!element.isLoggedIn"
+                >
+                  {{ element.isLoggedIn }}
+                </span>
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="actions">
+              <th class="text-center text-16" mat-header-cell *matHeaderCellDef>
+                التفاصيل
+              </th>
+              <td class="text-center" mat-cell *matCellDef="let element">
+                <button
+                  type="button"
+                  class="btn btn-wide btn-outline-secondary mr-3"
+                  (click)="open(editUser)"
+                >
+                  تعديل
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-outline-danger"
+                  (click)="confirm(deleteUser)"
+                >
+                  حذف
+                </button>
+              </td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+          </table>
+          <!-- <mat-card
+            *ngIf="isLoading || noData"
+            style="display: flex; justify-content: center; align-items: center"
+          >
+            <h4
+              *ngIf="isLoading"
+              style="font-family: cairo"
+              class="text-secondary text-14"
+            >
+              جاري تحميل البيانات ....
+            </h4>
+            <h4
+              *ngIf="noData"
+              style="font-family: cairo"
+              class="text-secondary text-14"
+            >
+              {{ errorMessage }}
+            </h4>
+          </mat-card> -->
+          <mat-paginator
+            #paginator
+            [length]="totalLength"
+            [pageSize]="limit"
+            [pageSizeOptions]="pageLimit"
+            (page)="changePage($event)"
+            showFirstLastButtons
+          >
+          </mat-paginator>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #addUser let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title ml-auto" id="modal-basic-title">مشغل جديد</h4>
+    <!-- <button
+      type="button"
+      class="close m-auto"
+      aria-label="Close"
+      (click)="modal.dismiss('Cross click')"
+    >
+      <span aria-hidden="true">&times;</span>
+    </button> -->
+  </div>
+  <div class="modal-body">
+    <form>
+      <div class="form-group row">
+        <label for="fullname" class="col-sm-2 col-form-label"
+          >ألاسم الكامل</label
+        >
+        <div class="col-sm-10">
+          <input
+            type="text"
+            class="form-control"
+            id="fullname"
+            placeholder="ألاسم الكامل"
+          />
+        </div>
+      </div>
+      <div class="form-group row">
+        <label for="username" class="col-sm-2 col-form-label"
+          >أسم المستخدم</label
+        >
+        <div class="col-sm-10">
+          <input
+            type="text"
+            class="form-control"
+            id="username"
+            placeholder="أسم المستخدم"
+          />
+        </div>
+      </div>
+      <div class="form-group row">
+        <label for="password" class="col-sm-2 col-form-label"
+          >كلمة المرور</label
+        >
+        <div class="col-sm-10">
+          <input
+            type="password"
+            class="form-control"
+            id="password"
+            placeholder="كلمة المرور"
+          />
+        </div>
+      </div>
+      <div class="form-group row">
+        <div class="col-2">
+          <label for="picker1">أختر الصلاحية</label>
+        </div>
+        <div class="col-10">
+          <select class="form-control">
+            <option>Admin</option>
+            <option>Monitor</option>
+            <option>Statistics</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group row">
+        <div class="col-2"></div>
+        <div class="col-sm-10 text-left">
+          <button type="submit" class="btn btn-primary">أضافة</button>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button
+      type="button"
+      class="btn btn-outline-dark btn-rounded"
+      (click)="modal.close('Save click')"
+    >
+      اغلاق
+    </button>
+  </div>
+</ng-template>
+
+<ng-template #editUser let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title ml-auto" id="modal-basic-title">تعديل مشغل</h4>
+    <!-- <button
+        type="button"
+        class="close m-auto"
+        aria-label="Close"
+        (click)="modal.dismiss('Cross click')"
+      >
+        <span aria-hidden="true">&times;</span>
+      </button> -->
+  </div>
+  <div class="modal-body">
+    <form>
+      <div class="form-group row">
+        <label for="fullname" class="col-sm-2 col-form-label"
+          >ألاسم الكامل</label
+        >
+        <div class="col-sm-10">
+          <input
+            type="text"
+            class="form-control"
+            id="fullname"
+            placeholder="ألاسم الكامل"
+          />
+        </div>
+      </div>
+      <div class="form-group row">
+        <label for="username" class="col-sm-2 col-form-label"
+          >أسم المستخدم</label
+        >
+        <div class="col-sm-10">
+          <input
+            type="text"
+            class="form-control"
+            id="username"
+            placeholder="أسم المستخدم"
+            readonly
+          />
+        </div>
+      </div>
+      <div class="form-group row">
+        <label for="password" class="col-sm-2 col-form-label"
+          >كلمة المرور</label
+        >
+        <div class="col-sm-10">
+          <input
+            type="password"
+            class="form-control"
+            id="password"
+            placeholder="كلمة المرور"
+          />
+        </div>
+      </div>
+      <div class="form-group row">
+        <div class="col-2">
+          <label for="picker1">أختر الصلاحية</label>
+        </div>
+        <div class="col-10">
+          <select class="form-control">
+            <option>Admin</option>
+            <option>Monitor</option>
+            <option>Statistics</option>
+          </select>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-2">
+          <span>حالة المستخدم</span>
+        </div>
+        <div class="col-md-10 text-left">
+          <label class="switch switch-success mr-3">
+            <input type="checkbox" checked />
+            <span class="slider"></span>
+          </label>
+        </div>
+      </div>
+      <div class="form-group row mt-3">
+        <div class="col-2"></div>
+        <div class="col-sm-10 text-left">
+          <button type="submit" class="btn btn-primary">تعديل</button>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button
+      type="button"
+      class="btn btn-outline-dark btn-rounded"
+      (click)="modal.close('Save click')"
+    >
+      اغلاق
+    </button>
+  </div>
+</ng-template>
+
+<ng-template #deleteUser let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-title">أيقاف مستخدم</h4>
+  </div>
+  <div class="modal-body">
+    <p class="text-left">
+      <strong
+        >هل انت متأكد من أيقاف المستخدم
+        <span class="text-primary">"Hasanee Nabil"</span></strong
+      >
+    </p>
+    <p class="text-left">أذا كنت متاكد قم بالضغط على تأكيد</p>
+  </div>
+  <div class="modal-footer">
+    <button
+      type="button"
+      ngbAutofocus
+      class="btn btn-danger btn-rounded ml-auto"
+      (click)="modal.close('Ok')"
+    >
+      تأكيد
+    </button>
+    <button
+      type="button"
+      class="btn btn-outline-secondary btn-rounded"
+      (click)="modal.dismiss('cancel')"
+    >
+      ألغاء
+    </button>
+  </div>
+</ng-template>
